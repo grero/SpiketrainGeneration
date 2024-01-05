@@ -4,7 +4,8 @@ using Distributions
 using LinearAlgebra
 using Makie
 
-struct IntegrateAndFireProcess
+abstract type SpikeProcess end
+struct IntegrateAndFireProcess <: SpikeProcess
     θ::Float64
     σ::Float64
 end
@@ -12,7 +13,7 @@ end
 get_threshold(q::IntegrateAndFireProcess) = q.θ
 do_step(q::IntegrateAndFireProcess, λ, dt) = λ*dt + q.σ*randn()
 
-struct LeakyIntegrateAndFireProcess
+struct LeakyIntegrateAndFireProcess <: SpikeProcess
     θ::Float64
     σ::Float64
     τ::Float64
@@ -24,7 +25,7 @@ LeakyIntegrateAndFireProcess(θ, σ, τ) = LeakyIntegrateAndFireProcess(θ, σ, 
 get_threshold(q::LeakyIntegrateAndFireProcess) = q.θ
 do_step(q::LeakyIntegrateAndFireProcess, x, λ, dt) = (-(x-q.x0)/q.τ+λ)*dt + q.σ*randn()
 
-struct ExponentialProcess
+struct ExponentialProcess <: SpikeProcess
 end
 
 get_threshold(q::ExponentialProcess) = -log(rand())
